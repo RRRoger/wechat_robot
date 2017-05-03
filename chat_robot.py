@@ -7,12 +7,21 @@ import json
 
 ALLOW_GROUP = True  # 允许群聊
 ALLOW_SINGLE = True  # 允许私聊
-GROUP_NAME_LIST = [
-    # u'大家五一快乐！',
-    # u'(1)(2)(3)(4)(5)(6)',
-    # u'伐木累',
-    u'三晚交流会'
+
+# 收到群信息满足该群名称
+# 在白名单且不在黑名单才可以自动回复
+
+# 群聊白名单
+GROUP_NAME_WHITE_LIST = [
+    u'苦大仇深四天班~',
+    u'(1)(2)(3)(4)(5)(6)',
+    u'伐木累',
+    u'三晚交流会',
+    u'退群保平安',
     ]
+# 群聊黑名单
+GROUP_NAME_BLACK_LIST = [
+    ]  
 
 # 这个key可以直接拿来用
 # 网上直接down的,慎用
@@ -51,7 +60,7 @@ def tuling_reply_group(msg):
     # 群名称
     group_name = msg['User']['NickName']
 
-    if group_name in GROUP_NAME_LIST:
+    if group_name in GROUP_NAME_WHITE_LIST and group_name not in GROUP_NAME_BLACK_LIST:
 
         print u'GROUP_msg from@ %s : [%s]' % (group_name, msg['Text'])
         print u'GROUP_reply to@ %s : [%s]' % (group_name, reply)
