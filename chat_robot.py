@@ -13,15 +13,17 @@ ALLOW_SINGLE = True  # 允许私聊
 
 # 群聊白名单
 GROUP_NAME_WHITE_LIST = [
-    u'苦大仇深四天班~',
-    u'(1)(2)(3)(4)(5)(6)',
-    u'伐木累',
-    u'三晚交流会',
-    u'退群保平安',
     ]
 # 群聊黑名单
 GROUP_NAME_BLACK_LIST = [
-    ]  
+    ]
+
+SINGLE_NAME_WHITE_LIST = [
+    u'山阳吕生君则',
+]
+
+SINGLE_NAME_BLACK_LIST = [
+]
 
 # 这个key可以直接拿来用
 # 网上直接down的,慎用
@@ -79,14 +81,20 @@ def tuling_reply_group(msg):
 def tuling_reply_single(msg):
     if not ALLOW_SINGLE:
         return
-    # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
-    defaultReply = 'I received: ' + msg['Text']
-    # 如果图灵Key出现问题，那么reply将会是None
-    reply = get_response(msg['Text'])
-    print u'SINGLE_msg from@ %s : [%s]' % (msg['User']['NickName'], msg['Text'])
-    print u'SINGLE_reply to@ %s : [%s]' % (msg['User']['NickName'], reply)
-    # a or b的意思是，如果a有内容，那么返回a，否则返回b
-    return reply or defaultReply
+
+    if msg['User']['NickName'] in SINGLE_NAME_WHITE_LIST and msg['User']['NickName'] not in SINGLE_NAME_BLACK_LIST:
+
+        # 为了保证在图灵Key出现问题的时候仍旧可以回复，这里设置一个默认回复
+        defaultReply = 'I received: ' + msg['Text']
+        # 如果图灵Key出现问题，那么reply将会是None
+        reply = get_response(msg['Text'])
+        print u'SINGLE_msg from@ %s : [%s]' % (msg['User']['NickName'], msg['Text'])
+        print u'SINGLE_reply to@ %s : [%s]' % (msg['User']['NickName'], reply)
+        # a or b的意思是，如果a有内容，那么返回a，否则返回b
+        return reply or defaultReply
+    else:
+        print 'ignore msg from@ %s : [%s] ' % (msg['User']['NickName'], msg['Text'])
+        return
  
 # 为了让修改程序不用多次扫码,使用热启动
 # 在auto_login()里面提供一个True，即hotReload=True
