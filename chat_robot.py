@@ -2,8 +2,10 @@
 
 import requests
 import itchat #这是一个用于微信回复的库
-import json 
+import json
+import datetime
 
+now = lambda :datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 ALLOW_GROUP = True  # 允许群聊
 ALLOW_SINGLE = True  # 允许私聊
@@ -64,8 +66,8 @@ def tuling_reply_group(msg):
 
     if group_name in GROUP_NAME_WHITE_LIST and group_name not in GROUP_NAME_BLACK_LIST:
 
-        print u'GROUP_msg from@ %s : [%s]' % (group_name, msg['Text'])
-        print u'GROUP_reply to@ %s : [%s]' % (group_name, reply)
+        print u'%s GROUP_msg from@ %s: [%s]' % (now(), group_name, msg['Text'])
+        print u'%s GROUP_reply to@ %s: [%s]' % (now(), group_name, reply)
 
         if msg['isAt']:
             # isAt 这个key是检测你在群聊中是否被别人@
@@ -74,7 +76,7 @@ def tuling_reply_group(msg):
         else:
             return reply or defaultReply
     else:
-        print u'GROUP_msg from@ %s : [%s]' % (group_name, msg['Text'])
+        print u'%s GROUP_msg from@ %s: [%s]' % (now(), group_name, msg['Text'])
 
 # 注册方法/私聊
 @itchat.msg_register(itchat.content.TEXT)
@@ -88,17 +90,17 @@ def tuling_reply_single(msg):
         defaultReply = 'I received: ' + msg['Text']
         # 如果图灵Key出现问题，那么reply将会是None
         reply = get_response(msg['Text'])
-        print u'SINGLE_msg from@ %s : [%s]' % (msg['User']['NickName'], msg['Text'])
-        print u'SINGLE_reply to@ %s : [%s]' % (msg['User']['NickName'], reply)
+        print u'%s SINGLE_msg from@ %s: [%s]' % (now(), msg['User']['NickName'], msg['Text'])
+        print u'%s SINGLE_reply to@ %s: [%s]' % (now(), msg['User']['NickName'], reply)
         # a or b的意思是，如果a有内容，那么返回a，否则返回b
         return reply or defaultReply
     else:
-        print 'ignore msg from@ %s : [%s] ' % (msg['User']['NickName'], msg['Text'])
+        print '%s ignore msg from@ %s: [%s] ' % (now(), msg['User']['NickName'], msg['Text'])
         return
  
 # 为了让修改程序不用多次扫码,使用热启动
 # 在auto_login()里面提供一个True，即hotReload=True
 # 即可保留登陆状态
 # 即使程序关闭，一定时间内重新开启也可以不用重新扫码
-itchat.auto_login(hotReload=True)
+itchat.auto_login(hotReload=0)
 itchat.run()
