@@ -5,10 +5,9 @@ import itchat #这是一个用于微信回复的库
 import json
 import datetime
 import ConfigParser
+from log import log_error, log_info, log_warn
 
-now = lambda :datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 CONF_PATH = "./robot.conf"
-
 
 def get_conf(option, path):
     cf = ConfigParser.ConfigParser()
@@ -72,8 +71,8 @@ def tuling_reply_group(msg):
 
     if group_name in conf['white_list'] and group_name not in conf['black_list']:
 
-        print u'%s GROUP_msg from@ %s: [%s]' % (now(), group_name, txt)
-        print u'%s GROUP_reply to@ %s: [%s]' % (now(), group_name, reply)
+        log_info(u'GROUP_msg from@ %s: [%s]' % (group_name, txt))
+        log_info(u'GROUP_reply to@ %s: [%s]' % (group_name, reply))
 
         if msg['isAt']:
             # isAt 这个key是检测你在群聊中是否被别人@
@@ -82,7 +81,7 @@ def tuling_reply_group(msg):
         else:
             return reply or defaultReply
     else:
-        print u'%s GROUP_msg from@ %s: [%s]' % (now(), group_name, txt)
+        log_info(u'GROUP_msg from@ %s: [%s]' % (group_name, txt))
 
 # 注册方法/私聊
 @itchat.msg_register(itchat.content.TEXT)
@@ -101,12 +100,12 @@ def tuling_reply_single(msg):
         defaultReply = 'I received: ' + txt
         # 如果图灵Key出现问题，那么reply将会是None
         reply = get_response(msg['Text'])
-        print u'%s SINGLE_msg from@ %s: [%s]' % (now(), nickname, txt)
-        print u'%s SINGLE_reply to@ %s: [%s]' % (now(), nickname, reply)
+        log_info(u'SINGLE_msg from@ %s: [%s]' % (nickname, txt))
+        log_info(u'SINGLE_reply to@ %s: [%s]' % (nickname, reply))
         # a or b的意思是，如果a有内容，那么返回a，否则返回b
         return reply or defaultReply
     else:
-        print '%s ignore msg from@ %s: [%s] ' % (now(), nickname, txt)
+        log_warn(u'IGNORE_msg from@ %s: [%s]' % (nickname, txt))
         return
  
 # 为了让修改程序不用多次扫码,使用热启动

@@ -1,2 +1,3 @@
 itchat.pkl
-robot.conf.bak
+*.bak
+*.log
